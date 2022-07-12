@@ -1,6 +1,12 @@
 ﻿package main
 
 import (
+	"strings"
+
+	"github.com/DisgoOrg/disgohook"
+
+	"github.com/DisgoOrg/disgohook/api"
+
 	"github.com/gtuk/discordwebhook"
 
 	"github.com/thatisuday/commando"
@@ -22,52 +28,58 @@ func main() {
 			fmt.Printf("type payy help or -h")
 		})
 
+	commando.
+		Register("payy.send_embeds").
+		SetShortDescription("send embeds to discord webhook. See docs at github.com/p4yy/simple-discordwebhook").
+		SetDescription("This command will sending embeds to discord webhook").
+		AddFlag("url", "WebhookID/WebhookToken", commando.String, "WebhookID/WebhookToken").
+		AddFlag("thumbnail", "url thumbnail", commando.String, "https://cdn.discordapp.com/attachments/992818839320547409/996094836824359032/unknown.png").
+		AddFlag("message", "message text to send", commando.String, "Hello world!").
+		AddFlag("title", "Set Title embed", commando.String, "This is title").
+		SetAction(func(args map[string]commando.ArgValue, flags map[string]commando.FlagValue) {
+			index_url := strings.Index(fmt.Sprint(flags["url"]), "false}")
+			index_thumbnail := strings.Index(fmt.Sprint(flags["thumbnail"]), "false}")
+			index_msg := strings.Index(fmt.Sprint(flags["message"]), "false}")
+			index_title := strings.Index(fmt.Sprint(flags["title"]), "false}")
+			text_url := strings.Replace(string(fmt.Sprint(flags["url"])[index_url+7:len(fmt.Sprint(flags["url"]))-1]), "\\n", "\n", -1)
+			text_thumbnail := strings.Replace(string(fmt.Sprint(flags["thumbnail"])[index_thumbnail+7:len(fmt.Sprint(flags["thumbnail"]))-1]), "\\n", "\n", -1)
+			text_message := strings.Replace(string(fmt.Sprint(flags["message"])[index_msg+7:len(fmt.Sprint(flags["message"]))-1]), "\\n", "\n", -1)
+			text_title := strings.Replace(string(fmt.Sprint(flags["title"])[index_title+7:len(fmt.Sprint(flags["title"]))-1]), "\\n", "\n", -1)
+			webhook, err := disgohook.NewWebhookClientByToken(nil, nil, text_url)
+			if err != nil {
+				fmt.Printf("failed to create webhook: %s", err)
+				return
+			}
+
+			if _, err := webhook.SendEmbeds(api.NewEmbedBuilder().
+				AddField(text_title, text_message, false).
+				SetColor(1127128).
+				SetThumbnail(text_thumbnail).
+				Build(),
+			); err != nil {
+				fmt.Printf("Didn't found url thumbnail")
+				webhook.SendEmbeds(api.NewEmbedBuilder().
+					AddField(text_title, text_message, false).
+					SetColor(1127128).
+					Build(),
+				)
+			}
+		})
 	// configure info command
 	commando.
-		Register("payy.send_discordwebhook").
-		SetShortDescription("send message to discord webhook. See docs at github.com/p4yy/docs-discordwebhook").
+		Register("payy.send_message").
+		SetShortDescription("send message to discord webhook. See docs at github.com/p4yy/simple-discordwebhook").
 		SetDescription("This command will sending message to discord webhook").
-		AddArgument("botname", "name of bot", "payy").
-		AddArgument("url_link", "url", "discord.com/api").
-		AddArgument("msg_1", "message text_1", " ").
-		AddArgument("msg_2", "message text_2", " ").
-		AddArgument("msg_3", "message text_3", " ").
-		AddArgument("msg_4", "message text_4", " ").
-		AddArgument("msg_5", "message text_5", " ").
-		AddArgument("msg_6", "message text_6", " ").
-		AddArgument("msg_7", "message text_7", " ").
-		AddArgument("msg_8", "message text_8", " ").
-		AddArgument("msg_9", "message text_9", " ").
-		AddArgument("msg_10", "message text_10", " ").
-		AddArgument("msg_11", "message text_11", " ").
-		AddArgument("msg_12", "message text_12", " ").
-		AddArgument("msg_13", "message text_13", " ").
-		AddArgument("msg_14", "message text_14", " ").
-		AddArgument("msg_15", "message text_15", " ").
-		AddArgument("msg_16", "message text_16", " ").
-		AddArgument("msg_17", "message text_17", " ").
-		AddArgument("msg_18", "message text_18", " ").
-		AddArgument("msg_19", "message text_19", " ").
-		AddArgument("msg_20", "message text_20", " ").
-		AddArgument("msg_21", "message text_21", " ").
-		AddArgument("msg_22", "message text_22", " ").
-		AddArgument("msg_23", "message text_23", " ").
-		AddArgument("msg_24", "message text_24", " ").
-		AddArgument("msg_25", "message text_25", " ").
-		AddArgument("msg_26", "message text_26", " ").
-		AddArgument("msg_27", "message text_27", " ").
-		AddArgument("msg_28", "message text_28", " ").
-		AddArgument("msg_29", "message text_29", " ").
-		AddArgument("msg_30", "message text_30", " ").
+		AddFlag("url", "WebhookID/WebhookToken", commando.String, "WebhookID/WebhookToken").
+		AddFlag("message", "message text to send", commando.String, "Hello world!").
+		AddFlag("botname", "Set name of bot", commando.String, "payy").
 		SetAction(func(args map[string]commando.ArgValue, flags map[string]commando.FlagValue) {
-			username := args["botname"].Value
-			url := args["url_link"].Value
-			content := ""
-			//content := args["msg_1"].Value + "\n" + args["msg_2"].Value + "\n" + args["msg_3"].Value + "\n"
-			for x := 1; x <= 30; x++ {
-				s := fmt.Sprint(x)
-				content = content + args["msg_"+s].Value + "\n"
-			}
+			index_url := strings.Index(fmt.Sprint(flags["url"]), "false}")
+			index_msg := strings.Index(fmt.Sprint(flags["message"]), "false}")
+			index_botname := strings.Index(fmt.Sprint(flags["botname"]), "false}")
+			username := strings.Replace(string(fmt.Sprint(flags["botname"])[index_botname+7:len(fmt.Sprint(flags["botname"]))-1]), "\\n", "\n", -1)
+			url := "https://discord.com/api/webhooks/" + strings.Replace(string(fmt.Sprint(flags["url"])[index_url+7:len(fmt.Sprint(flags["url"]))-1]), "\\n", "\n", -1)
+			content := strings.Replace(string(fmt.Sprint(flags["message"])[index_msg+7:len(fmt.Sprint(flags["message"]))-1]), "\\n", "\n", -1)
 			message := discordwebhook.Message{
 				Username: &username,
 				Content:  &content,
