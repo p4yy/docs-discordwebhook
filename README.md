@@ -1,6 +1,16 @@
-# docs-discordwebhook
-## Example usage
-- payy.exe payy.send_discordwebhook Bot_name Url_discord_webhook message
+# Simple discord webhook
 
-### Full Example
-- payy.exe payy.send_discordwebhook payy https://discord.com/api/webhooks/995540911872294973/AWZCCqIcyZi3O5oB8z0J6Ki9eu-9HzMEsH9P_zhOQGLcw1s2VnPAp-CbvnwPJKNPn7uk ```` "BOT : Hamumu" "WORLD : Indonesia" ````
+## Command
+- payy.send_message
+- payy.send_embeds
+
+## Flags
+- --url >> ``WebhookID/WebhookToken``
+- --title >> ``Set title on payy.send_embeds``
+- --botname >> ``You just can set this on payy.send_message``
+- --thumbnail >> ``Set url thumbnail on payy.send_embeds``
+- --message >> ``Set content to send``
+
+### Example usage
+- go run .\payy-webhook.go payy.send_message --botname ``"BOTNAME"`` --url ``"WebhookID/WebhookToken"`` --message ``"Hello\nWorld!"`` 
+- go run .\payy-webhook.go payy.send_embeds --url ``"WebhookID/WebhookToken"`` --message ``"Hello\nWorld!"`` --title ``"Hello Title"`` --thumbnail ``"url thumbnail"``
